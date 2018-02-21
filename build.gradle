@@ -1,0 +1,90 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+group = 'com.exqudens'
+version = '1.0' + '.' + (System.getenv().BUILD_NUMBER?.toInteger() ?: 999999)
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+task sourcesJar(type: Jar, dependsOn: ['classes']) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: ['javadoc']) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Project-Group': project.group, 'Project-Name': project.name, 'Project-Version': project.version
+    }
+}
+
+eclipse {
+    jdt {
+        sourceCompatibility = property('sourceCompatibility')
+        targetCompatibility = property('targetCompatibility')
+    }
+    project {
+        buildCommands.clear()
+        buildCommand 'org.eclipse.jdt.core.javabuilder'
+        natures = ['org.eclipse.jdt.core.javanature']
+    }
+    classpath {
+        plusConfigurations = [configurations.compileOnly, configurations.testRuntime]
+        minusConfigurations = []
+    }
+}
+
+tasks['cleanEclipse'].doLast {
+    delete '.settings'
+    delete 'bin'
+}
+
+tasks['cleanIdea'].doLast {
+    delete '.idea'
+}
+
+tasks['cleanIdea'].dependsOn 'cleanIdeaWorkspace'
+
+repositories {
+    if (System.getenv().GIT_BRANCH == null) {
+        mavenLocal()
+    }
+    mavenCentral()
+}
+
+dependencies {
+
+    // compileOnly group: "org.hibernate",     name: "hibernate-annotations", version: "3.5.6-Final", ext: "jar"
+    compileOnly group: "org.projectlombok", name: "lombok", version: "1.16.18"
+
+    compile group: "org.slf4j",     name: "slf4j-api",      version: "1.7.21"
+    compile group: "org.hibernate", name: "hibernate-core", version: "5.2.12.Final"
+
+    testCompile group: "junit",                      name: "junit",                version: "4.12"
+    testCompile group: "org.codehaus.groovy",        name: "groovy-all",           version: "2.3.8"
+    testCompile group: "com.zaxxer",                 name: "HikariCP",             version: "2.6.1"
+    testCompile group: "com.fasterxml.jackson.core", name: "jackson-databind",     version: "2.9.2"
+    testCompile group: "mysql",                      name: "mysql-connector-java", version: "6.0.6"
+
+    testRuntime group: "ch.qos.logback", name: "logback-classic",      version: "1.1.7"
+
+}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration debug='false'>
+
+  <!-- <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"><resetJUL>true</resetJUL></contextListener> -->
+  <!-- <pattern>%msg%n</pattern> -->
+  <!-- <pattern>%X{key}%logger{100}:%M - %msg%n</pattern> -->
+  <!-- <pattern>%-5level[%thread]: %X{key}%logger{100}:%M:%L - %msg%n</pattern> -->
+  <!-- <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}:%-5level[%thread]: %X{key}%logger{100}:%M:%L - %msg%n</pattern> -->
+  <!-- <logger name='MySQL' level='ERROR'/> -->
+  <!-- <logger name='MySQL' level='INFO' additivity='false'><appender-ref ref='FILE'/></logger> -->
+
+  <appender name='CONSOLE' class='ch.qos.logback.core.ConsoleAppender'>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}:%-5level[%thread]: %X{key}%logger{100}:%M:%L - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name='com.zaxxer.hikari' level='ERROR'/>
+  <logger name='org.jboss.logging' level='ERROR'/>
+  <logger name='org.hibernate' level='ERROR'/>
+  <logger name='org.hibernate.SQL' level='ERROR'/>
+  <logger name='MySQL' level='ERROR'/>
+  <logger name='com.exqudens.hibernate' level='ERROR'/>
+
+  <logger name='com.exqudens.hibernate.test' level='ERROR'/>
+
+  <root level='ALL'>
+    <appender-ref ref='CONSOLE'/>
+  </root>
+
+</configuration>
